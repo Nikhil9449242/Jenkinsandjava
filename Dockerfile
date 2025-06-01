@@ -1,10 +1,18 @@
-FROM maven:3.8.1-openjdk-8 AS build
+FROM maven:3.8.7-eclipse-temurin-17 AS build
+
 WORKDIR /app
+
+# Copy Maven project files
 COPY pom.xml .
 COPY src ./src
-RUN mvn package
 
-FROM tomcat:9.0.53-jdk8
-RUN mkdir -p /usr/local/tomcat/webapps
-RUN chmod -R 777 /usr/local/tomcat/conf
+# Build the WAR package
+RUN mvn clean package
+
+# Use Tomcat 10 with JDK 17 for runtime
+FROM tomcat:10.1.10-jdk17-temurin
+
+# Optional: ensure correct permission
+RUN mkdir -p /usr/local/tomcat/webapps && \
+    chmod -R 777 /usr/local/tomcat/conf
 COPY --from=build /app/target/helloworld-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/helloworld.war
