@@ -12,7 +12,7 @@ RUN mvn clean package
 # Use Tomcat 10 with JDK 17 for runtime
 FROM tomcat:10.1.10-jdk17-temurin
 
-# Optional: ensure correct permission
+#ensure correct permission
 RUN mkdir -p /usr/local/tomcat/webapps && \
     chmod -R 777 /usr/local/tomcat/conf
 COPY --from=build /app/target/helloworld-1.0-SNAPSHOT.war /usr/local/tomcat/webapps/helloworld.war
